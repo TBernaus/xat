@@ -1,0 +1,58 @@
+<%- include('header') %>
+
+<h1>Inici</h1><br><br>
+
+<% if (error === 'wrongUser') { %>
+  <p style="color: red;">Òspali, no hem trobat l'usuari... :(</p>
+<% } else if (error === 'Auth') { %>
+  <p style="color: red;">Sembla que vols accedir a una pàgina restringida sense iniciar sessió...</p>
+<% } else if (error === 'databaseError') { %>
+  <p style="color: red;">Hem tingut un error a la base de dades :/</p>
+<% }  else if (error === 'wrongPassword') { %>
+  <p style="color: red;">Contrasenya incorrecta ):</p>
+<% } %>
+<% if (username) { %>
+    <h2>Benvingut, <%= username %>!</h2>
+<% } else { %>
+  <form action="/admin/welcome" method="POST">
+    <label for="user">Nom d'Usuari:</label>
+    <input type="text" id="username" name="username" required><br>
+
+    <label for="pass">Contrassenya:</label>
+    <input type="password" id="pass" name="pass" required><br>
+    <input style="margin-left: 1em;" type="submit" value="Inicia Sessió">
+  </form><br>
+
+  <form action="/registre" method="POST">
+    <input type="submit" value="Registrat">
+  </form>
+
+<% } %>
+
+
+<br><br>
+<a href="/">Torna a l'inici</a> <br>
+<a href="/info">Informació</a> <br>
+<br>
+
+<% if (username) { %>
+  <a href="/admin/info">Informació per a usuaris</a> <br>
+  <a href="/admin/welcome">Pàgina de benvinguda</a> <br>
+  <a href="/admin/create">Crea usuaris</a> <br>
+  <a href="/admin/xat/<%= username %>">El teu xat</a> <br>
+  <a href="/admin/historial">Revisa el teu historial</a> <br><br>
+    
+<br>
+<div class="destacades">
+  <h2>Xats destacats</h2>
+  <button onclick="window.location.href='/admin/xat/Barcelona'">Barcelona</button>
+  <button onclick="window.location.href='/admin/xat/Madrid'">Madrid</button>
+  <button onclick="window.location.href='/admin/xat/Teruel'">Teruel</button>
+  <button onclick="window.location.href='/admin/xat/Murcia'">Murcia</button>
+</div>
+<br>
+<br>
+<a href="/logout">Tanca la sessió</a> de <%=username%> <br>
+<% } %>
+
+<%- include('footer') %>

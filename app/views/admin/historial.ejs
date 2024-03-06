@@ -1,0 +1,44 @@
+<%- include('header') %>
+<h1>Historial de missatges</h1>
+<h3>Usuari: <%= username %></h3>
+<ul>
+  <form action="/admin/historial/delete/<%= username %>" method="POST">
+    <button id="sala" type="submit">Elimina tots els missatges del teu xat</button>
+  </form><br>
+
+
+  <% if (rol === 'admin') { %>
+    <% messages.forEach(message => { %>
+        <div class="historial">
+            <strong><%= message.timestamp %></strong> - xat: <%=message.xat %> <br><strong> Missatge: </strong><%= message.content %>
+            <form action="/admin/historial/<%= message._id %>?_method=DELETE" method="POST">
+                <button type="submit">Eliminar</button>
+            </form>
+        </div><br>
+    <% }) %>
+    <% } %>
+</ul>
+<a href="/">Torna a l'inici</a> <br>
+<a href="/info">Informació</a> <br>
+<br>
+
+<% if (username) { %>
+  <a href="/admin/info">Informació per a usuaris</a> <br>
+  <a href="/admin/welcome">Pàgina de benvinguda</a> <br>
+  <a href="/admin/create">Crea usuaris</a> <br>
+  <a href="/admin/xat/<%= username %>">El teu xat</a> <br>
+  <br><br><br>
+    
+<br>
+<div class="destacades">
+  <h2>Xats destacats</h2>
+  <button onclick="window.location.href='/admin/xat/Barcelona'">Barcelona</button>
+  <button onclick="window.location.href='/admin/xat/Madrid'">Madrid</button>
+  <button onclick="window.location.href='/admin/xat/Teruel'">Teruel</button>
+  <button onclick="window.location.href='/admin/xat/Murcia'">Murcia</button>
+</div>
+<br>
+<br>
+<a href="/logout">Tanca la sessió</a> de <%=username%> <br>
+<% } %>
+<%- include('../footer') %>

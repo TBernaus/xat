@@ -1,0 +1,29 @@
+<%- include('header') %>
+
+<h1> <%=user%> creat</h1>
+
+
+<a href="/">Torna a l'inici</a> <br>
+<a href="/info">Informació</a> <br>
+<br>
+
+<% if (username) { %>
+  <a href="/admin/info">Informació per a usuaris</a> <br>
+  <a href="/admin/welcome">Pàgina de benvinguda</a> <br>
+  <a href="/admin/create">Crea usuaris</a> <br>
+  <a href="/admin/xat/<%= username %>">El teu xat</a> <br>
+  <a href="/admin/historial">Revisa el teu historial</a> <br><br>
+    
+<br>
+<div class="destacades">
+  <h2>Xats destacats</h2>
+  <button onclick="window.location.href='/admin/xat/Barcelona'">Barcelona</button>
+  <button onclick="window.location.href='/admin/xat/Madrid'">Madrid</button>
+  <button onclick="window.location.href='/admin/xat/Teruel'">Teruel</button>
+  <button onclick="window.location.href='/admin/xat/Murcia'">Murcia</button>
+</div>
+<br>
+<br>
+<a href="/logout">Tanca la sessió</a> de <%=username%> <br>
+<% } %>
+<%- include('../footer') %>

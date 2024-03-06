@@ -1,0 +1,127 @@
+<%- include('header') %>
+
+<h1>Benvingut al xat <%= xat %></h1>
+<h3>Logejat com a <%= username %></h3>
+
+
+<div style="display: flex;">
+  <!-- xat -->
+  <div id="chat-messages" style="flex: 1; height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px;">
+    <% messages.forEach(message => { %>
+      <div class="message-container <%= message.username === username ? 'user-message' : '' %>">
+        (<%= message.username %>)<br><br>
+        <%= message.content %><br>
+        (<%= message.timestamp %>)
+      </div>
+    <% }); %>
+  </div>
+
+  <!-- usuarisActius -->
+  <div class="usuarisActius" style="flex: 0 0 8%; border-left: 1px solid #ccc; padding: 10px; margin-left: 2%;">
+    <h2>Participants</h2>
+    <ul>
+      <% usuaris.forEach(user => { %>
+        <div>
+          <%= user %>
+        </div>
+      <% }); %>
+    </ul>
+  </div>
+</div>
+
+<form id="chat-form">
+  <input style="border-radius: 3em; height:30px; width: 1300px; padding-left: 10px;"type="text" id="message" name="message" required>
+  <input type="submit" value="Enviar">
+</form>
+<br><br><a href="/">Torna a l'inici</a> <br>
+<a href="/info">Informació</a> <br>
+<br>
+
+<% if (username) { %>
+  <a href="/admin/info">Informació per a usuaris</a> <br>
+  <a href="/admin/welcome">Pàgina de benvinguda</a> <br>
+  <a href="/admin/create">Crea usuaris</a> <br>
+  <a href="/admin/xat/<%= username %>">El teu xat</a> <br>
+  <a href="/admin/historial">Revisa el teu historial</a> <br><br>
+    
+<br>
+<div class="destacades">
+  <h2>Xats destacats</h2>
+  <button onclick="window.location.href='/admin/xat/Barcelona'">Barcelona</button>
+  <button onclick="window.location.href='/admin/xat/Madrid'">Madrid</button>
+  <button onclick="window.location.href='/admin/xat/Teruel'">Teruel</button>
+  <button onclick="window.location.href='/admin/xat/Murcia'">Murcia</button>
+</div>
+<br>
+<br>
+<br>
+<% } %>
+
+<form action="/admin/xat/<%= xat %>" method="POST">
+  <label for="xat">Busca un altre xat:</label>
+  <input style="width: 100px;" type="text" id="xat" name="xat" required>
+  <input type="submit" value="Vés-hi">
+</form>
+<% if (username) { %>
+
+<a href="/logout">Tanca la sessió</a> de <%=username%> <br>
+<% } %>
+<%- include('../footer') %>
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+  const socket = io();
+
+  // Enviar el nom del xat al servidor quan un usuari es connecta
+  socket.emit('join chat', '<%= xat %>');
+
+  // Configuració dels missatges del client
+  document.getElementById('chat-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const messageInput = document.getElementById('message');
+    const messageContent = messageInput.value.trim();
+    if (messageContent !== '') {
+      const now = new Date();
+      const day = now.getDate().toString().padStart(2, '0');
+      const month = (now.getMonth() + 1).toString().padStart(2, '0');
+      const hours = now.getHours().toString().padStart(2, '0');
+      const minutes = now.getMinutes().toString().padStart(2, '0');
+      const temps = `${day}-${month} - ${hours}.${minutes}`
+
+      const message = {
+        username: '<%= username %>',
+        content: messageContent,
+        xat: '<%= xat %>',
+        timestamp: temps
+      };
+
+      // Enviar el missatge del client al servidor
+      socket.emit('chat message', message);
+      messageInput.value = '';
+    }
+  });
+  // Missatges del servidor al client
+  socket.on('chat message', (msg) => {
+    const chatMessages = document.getElementById('chat-messages');
+    const messageElement = document.createElement('div');
+
+    // Agregar classe 'user-message'
+    messageElement.className = `message-container ${msg.username === '<%= username %>' ? 'user-message' : ''}`;
+
+    messageElement.innerHTML = `(${msg.username})<br><br>${msg.content}<br>(${msg.timestamp})`;
+    chatMessages.appendChild(messageElement);
+
+  });
+
+  socket.on('update active users', (activeUsers) => {
+    const activeUsersList = document.querySelector('.usuarisActius ul');
+    activeUsersList.innerHTML = ''; // Limpiar la lista actual
+
+    activeUsers.forEach(user => {
+        const userItem = document.createElement('div');
+        userItem.textContent = user;
+        activeUsersList.appendChild(userItem);
+    });
+});
+</script>

@@ -1,0 +1,42 @@
+<%- include('header') %>
+
+<h1>Crea't un compte amb nosaltres!</h1><br><br>
+
+<form action="/save" method="POST">
+    <label for="user">Nom d'Usuari:</label>
+    <input type="text" id="username" name="username" required><br>
+
+    <label for="pass">Contrassenya:</label>
+    <input type="password" id="pass" name="pass" required><br>
+
+    <input style="margin-left: 1em;" type="submit" value="Registrarse">
+</form><br>
+<form style="margin-left: 1em;" action="/" method="get">
+  <input type="submit" value="Inicia sessió">
+</form>
+<br><br>
+
+<a href="/">Torna a l'inici</a> <br>
+<a href="/info">Informació</a> <br>
+<br>
+
+<% if (username) { %>
+  <a href="/admin/info">Informació per a usuaris</a> <br>
+  <a href="/admin/welcome">Pàgina de benvinguda</a> <br>
+<br><br>
+  <a href="/admin/xat/<%= username %>">El teu xat</a> <br>
+  <a href="/admin/historial">Revisa el teu historial</a> <br><br>
+    
+<br>
+<div class="destacades">
+  <h2>Xats destacats</h2>
+  <button onclick="window.location.href='/admin/xat/Barcelona'">Barcelona</button>
+  <button onclick="window.location.href='/admin/xat/Madrid'">Madrid</button>
+  <button onclick="window.location.href='/admin/xat/Teruel'">Teruel</button>
+  <button onclick="window.location.href='/admin/xat/Murcia'">Murcia</button>
+</div>
+<br>
+<br>
+<a href="/logout">Tanca la sessió</a> de <%=username%> <br>
+<% } %>
+<%- include('footer') %>
